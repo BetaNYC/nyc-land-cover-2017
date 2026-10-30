@@ -126,7 +126,9 @@ import json, urllib.request
 import numpy as np, rasterio
 
 BASE = "https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/"
-col = json.load(urllib.request.urlopen(BASE + "collection.json"))
+UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
+col = json.load(urllib.request.urlopen(
+    urllib.request.Request(BASE + "collection.json", headers=UA)))
 exact = {c["value"]: c["percentage"]
          for c in col["assets"]["data"]["bands"][0]["classification:classes"]
          if not c.get("nodata")}
@@ -146,7 +148,9 @@ for v, n in zip(values, counts):
 import json, urllib.request
 
 BASE = "https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/"
-col = json.load(urllib.request.urlopen(BASE + "collection.json"))
+UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
+col = json.load(urllib.request.urlopen(
+    urllib.request.Request(BASE + "collection.json", headers=UA)))
 for c in col["assets"]["data"]["bands"][0]["classification:classes"]:
     print(c["value"], c["title"], c.get("color_hint", "transparent"),
           c.get("percentage", ""))
@@ -154,6 +158,10 @@ for c in col["assets"]["data"]["bands"][0]["classification:classes"]:
 
 ## Quirks that produce silently wrong answers
 
+- **Python's `urllib` is refused.** `data.source.coop` answers HTTP 403
+  (Cloudflare error 1010) to the default `Python-urllib` User-Agent. Send any
+  other User-Agent, as the recipes here do, or use `requests`, `httpx`,
+  DuckDB, or GDAL, which are accepted.
 - **Feet, not metres.** Coordinates and pixel sizes are US survey feet. A pixel
   is 0.25 sq ft, about 0.0232 square metres. Divide pixel counts by 174,240 for
   acres.
@@ -185,6 +193,13 @@ for c in col["assets"]["data"]["bands"][0]["classification:classes"]:
 None. This is a single raster. Combine it with vector data by zonal statistics
 after reprojecting the vectors to EPSG:2263.
 
+## Provenance
+
+A mirror of [NYC Open Data he6d-2qns](https://data.cityofnewyork.us/d/he6d-2qns),
+produced by the NYC Office of Technology and Innovation with the University of
+Vermont Spatial Analysis Laboratory. The [README](README.md) has the conversion
+steps and the sync date, and `collection.json` has `providers` and `updated`.
+
 ## Related datasets
 
 Not in this catalog. Both are on NYC Open Data:
@@ -204,9 +219,11 @@ The file size:
 import json, urllib.request
 
 BASE = "https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/"
-col = json.load(urllib.request.urlopen(BASE + "collection.json"))
+UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
+col = json.load(urllib.request.urlopen(
+    urllib.request.Request(BASE + "collection.json", headers=UA)))
 data = col["assets"]["data"]
-req = urllib.request.Request(data["href"], method="HEAD")
+req = urllib.request.Request(data["href"], method="HEAD", headers=UA)
 size = int(urllib.request.urlopen(req).headers["Content-Length"])
 if size != data["file:size"]:
     print("size", size, "!=", data["file:size"])
@@ -220,7 +237,9 @@ import json, urllib.request
 import rasterio
 
 BASE = "https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/"
-col = json.load(urllib.request.urlopen(BASE + "collection.json"))
+UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
+col = json.load(urllib.request.urlopen(
+    urllib.request.Request(BASE + "collection.json", headers=UA)))
 stats = col["assets"]["data"]["bands"][0]["statistics"]
 with rasterio.open(col["assets"]["data"]["href"]) as ds:
     tags = ds.tags(1)

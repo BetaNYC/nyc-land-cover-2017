@@ -34,10 +34,17 @@ value to a class name, a colour, and an exact pixel count:
 import json, urllib.request
 
 ROOT = "https://data.source.coop/betanyc/nyc-land-cover-2017/"
-cat = json.load(urllib.request.urlopen(ROOT + "catalog.json"))
+UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
+
+
+def get_json(url):
+    return json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA)))
+
+
+cat = get_json(ROOT + "catalog.json")
 for link in cat["links"]:
     if link["rel"] == "child":
-        col = json.load(urllib.request.urlopen(ROOT + link["href"].lstrip("./")))
+        col = get_json(ROOT + link["href"].removeprefix("./"))
         data = [a for a in col["assets"].values() if "data" in a["roles"]][0]
         print(col["id"], data["href"], data["file:size"])
 ```
@@ -49,6 +56,8 @@ None. The catalog holds a single raster.
 ## Quirks that produce silently wrong answers
 
 - The raster is in US survey feet (EPSG:2263), not metres or degrees.
+- `data.source.coop` refuses Python's default `urllib` User-Agent with HTTP
+  403. Send a User-Agent header, as above, or use `requests` or `httpx`.
 - Water covers the harbor out to the city boundary, and it is the largest
   class. Exclude it for land-only shares.
 - The collection's [AGENTS.md](land-cover-2017/AGENTS.md) lists the rest.

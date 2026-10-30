@@ -5,6 +5,19 @@
 
 A 6-inch resolution, 8-class land cover map of New York City, derived from the 2017 LiDAR capture and 2016 orthoimagery. Each pixel holds one class: tree canopy, grass/shrubs, bare soil, water, buildings, roads, other impervious, or railroads. The map was made for the city's Urban Tree Canopy assessment, so it maps from the top down: canopy that hangs over a road or a building counts as tree canopy. This is a mirror of the [NYC Open Data release](https://data.cityofnewyork.us/d/he6d-2qns), converted without changes to pixel values to a Cloud Optimized GeoTIFF in New York State Plane Long Island feet (EPSG:2263). The [AGENTS.md](AGENTS.md) shows how to read pixels and compute class areas without downloading the file.
 
+## Quickstart
+
+Read the class at a point straight from the published file (GDAL 3.x, longitude then latitude). This point in Central Park prints `2`, Grass/Shrubs:
+
+<!-- check -->
+```bash
+gdallocationinfo -valonly -wgs84 \
+  /vsicurl/https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/nyc-land-cover-2017.tif \
+  -73.9654 40.7829
+```
+
+The [AGENTS.md](AGENTS.md) has Python recipes for class areas in a bounding box and fast whole-city estimates.
+
 ## Classes
 
 Pixel counts and shares are measured from the published file. Each pixel is 0.5 ft x 0.5 ft (0.25 sq ft). Shares are of pixels inside the city boundary, which includes water.
@@ -99,5 +112,3 @@ Related documentation:
 - [NYC Open Data, Tree Canopy Change (2010 - 2017)](https://data.cityofnewyork.us/d/by9k-vhck)
 - [NYC Open Data data dictionary (Excel), attached to he6d-2qns](https://data.cityofnewyork.us/api/views/he6d-2qns/files/dde118cd-b908-42fd-8621-aea5558c7912?download=true&filename=Data_Dictionary_Land_Cover.xlsx)
 - [ArcGIS metadata from the original zip (NYC_2017_LiDAR_LandCover.img.xml)](./NYC_2017_LiDAR_LandCover.img.xml)
-
-For queries and recipes, read the [AGENTS.md](AGENTS.md).
