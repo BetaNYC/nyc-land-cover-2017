@@ -1,0 +1,332 @@
+{
+  "type": "Collection",
+  "stac_version": "1.1.0",
+  "stac_extensions": [
+    "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/classification/v2.0.0/schema.json"
+  ],
+  "id": "land-cover-2017",
+  "title": "NYC Land Cover 2017 (6-inch, 8 classes)",
+  "description": "A 6-inch resolution, 8-class land cover map of New York City, derived from the 2017 LiDAR capture and 2016 orthoimagery. Each pixel holds one class: tree canopy, grass/shrubs, bare soil, water, buildings, roads, other impervious, or railroads. The map was made for the city's Urban Tree Canopy assessment, so it maps from the top down: canopy that hangs over a road or a building counts as tree canopy. This is a mirror of the [NYC Open Data release](https://data.cityofnewyork.us/d/he6d-2qns), converted without changes to pixel values to a Cloud Optimized GeoTIFF in New York State Plane Long Island feet (EPSG:2263). The [AGENTS.md](AGENTS.md) shows how to read pixels and compute class areas without downloading the file.",
+  "license": "other",
+  "keywords": [
+    "land cover",
+    "tree canopy",
+    "urban tree canopy",
+    "lidar",
+    "grass",
+    "shrub",
+    "bare soil",
+    "water",
+    "buildings",
+    "roads",
+    "impervious",
+    "railroad",
+    "new york city"
+  ],
+  "providers": [
+    {
+      "name": "NYC Office of Technology and Innovation (OTI)",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.nyc.gov/content/oti/pages/"
+    },
+    {
+      "name": "University of Vermont Spatial Analysis Laboratory",
+      "roles": [
+        "producer",
+        "processor"
+      ],
+      "url": "https://www.uvm.edu/rsenr/sal"
+    },
+    {
+      "name": "BetaNYC",
+      "roles": [
+        "host"
+      ],
+      "url": "https://beta.nyc",
+      "email": "lab@beta.nyc"
+    }
+  ],
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -74.260381,
+          40.485804,
+          -73.698025,
+          40.917692
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2016-01-01T00:00:00Z",
+          "2017-05-17T23:59:59Z"
+        ]
+      ]
+    }
+  },
+  "assets": {
+    "data": {
+      "href": "https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/nyc-land-cover-2017.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "NYC Land Cover 2017 (Cloud Optimized GeoTIFF, EPSG:2263)",
+      "roles": [
+        "data"
+      ],
+      "file:size": 1201413610,
+      "file:checksum": "12200d5ad51326f4577ac08147edb137422037b0e1e2ead74fdc22f5beec281c58a5",
+      "proj:code": "EPSG:2263",
+      "proj:shape": [
+        314414,
+        310844
+      ],
+      "proj:transform": [
+        0.5,
+        0.0,
+        912286.93,
+        0.0,
+        -0.5,
+        273618.3
+      ],
+      "proj:bbox": [
+        912286.93,
+        116411.29999999999,
+        1067708.9300000002,
+        273618.3
+      ],
+      "bands": [
+        {
+          "name": "land_cover_class",
+          "description": "Land cover class code, 1 to 8. 0 is NoData, outside the city boundary.",
+          "data_type": "uint8",
+          "nodata": 0,
+          "statistics": {
+            "minimum": 1.0,
+            "maximum": 8.0,
+            "mean": 4.1611546745131,
+            "stddev": 2.0263974871886,
+            "valid_percent": 47.55
+          },
+          "classification:classes": [
+            {
+              "value": 0,
+              "name": "nodata",
+              "title": "NoData",
+              "description": "Outside the New York City boundary. Transparent.",
+              "nodata": true
+            },
+            {
+              "value": 1,
+              "name": "Tree-Canopy",
+              "title": "Tree Canopy",
+              "description": "Vegetation taller than 8 ft, including canopy that overhangs other features. Current as of 2017.",
+              "color_hint": "2E7D32",
+              "count": 7446483259,
+              "percentage": 16.0239
+            },
+            {
+              "value": 2,
+              "name": "Grass-Shrubs",
+              "title": "Grass/Shrubs",
+              "description": "Vegetation 8 ft or lower.",
+              "color_hint": "A6D96A",
+              "count": 5493958626,
+              "percentage": 11.8223
+            },
+            {
+              "value": 3,
+              "name": "Bare-Soil",
+              "title": "Bare Soil",
+              "description": "The least accurate class: user's accuracy 89%, producer's accuracy 82%.",
+              "color_hint": "C8A165",
+              "count": 565995276,
+              "percentage": 1.2179
+            },
+            {
+              "value": 4,
+              "name": "Water",
+              "title": "Water",
+              "color_hint": "4A90C8",
+              "count": 13237953060,
+              "percentage": 28.4864
+            },
+            {
+              "value": 5,
+              "name": "Buildings",
+              "title": "Buildings",
+              "description": "Current as of 2017.",
+              "color_hint": "B5473A",
+              "count": 6709981535,
+              "percentage": 14.439
+            },
+            {
+              "value": 6,
+              "name": "Roads",
+              "title": "Roads",
+              "color_hint": "3F3F3F",
+              "count": 4627975203,
+              "percentage": 9.9588
+            },
+            {
+              "value": 7,
+              "name": "Other-Impervious",
+              "title": "Other Impervious",
+              "color_hint": "A9A9A9",
+              "count": 8138988426,
+              "percentage": 17.514
+            },
+            {
+              "value": 8,
+              "name": "Railroads",
+              "title": "Railroads",
+              "description": "New in the 2017 map. The 2010 map folded railroads into Roads (6). Reassign 8 to 6 to compare the two years.",
+              "color_hint": "7E4FA0",
+              "count": 249879655,
+              "percentage": 0.5377
+            }
+          ]
+        }
+      ]
+    },
+    "thumbnail": {
+      "href": "./thumbnail.png",
+      "type": "image/png",
+      "title": "Preview of the default rendering over a light basemap. Basemap: Esri World Light Gray Base. Esri, HERE, Garmin, (c) OpenStreetMap contributors, and the GIS user community.",
+      "roles": [
+        "thumbnail"
+      ],
+      "file:size": 444124,
+      "file:checksum": "1220a8e1f59979f42212c7473d13b61b0879311604609858ef3d92c89f7aae8dd932"
+    },
+    "source": {
+      "href": "https://data.cityofnewyork.us/api/views/he6d-2qns/files/64c49dc7-c17f-43db-a4e3-669a28f73234?filename=Land_Cover.zip",
+      "type": "application/zip",
+      "title": "Original NYC Open Data download, Land_Cover.zip (ERDAS Imagine in a zip)",
+      "roles": [
+        "source"
+      ],
+      "file:size": 1334211225,
+      "file:checksum": "1220c8f9e9a8b7172ce850ae80d9f74859e94eca4565a215bf05c7daba87035aac1b"
+    },
+    "data-dictionary": {
+      "href": "https://data.cityofnewyork.us/api/views/he6d-2qns/files/dde118cd-b908-42fd-8621-aea5558c7912?download=true&filename=Data_Dictionary_Land_Cover.xlsx",
+      "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "title": "NYC Open Data data dictionary (Excel), attached to he6d-2qns",
+      "roles": [
+        "metadata"
+      ],
+      "file:size": 67340,
+      "file:checksum": "12203fdd14d1bec364b7dfe11ab41f4bc64cc676a88d808efdc0f3cd19729ba980ab"
+    },
+    "arcgis-metadata": {
+      "href": "./NYC_2017_LiDAR_LandCover.img.xml",
+      "type": "application/xml",
+      "title": "ArcGIS metadata from the original zip (NYC_2017_LiDAR_LandCover.img.xml)",
+      "roles": [
+        "metadata"
+      ],
+      "file:size": 602148,
+      "file:checksum": "122002bb3d3574b169cadaeb2a3326917257787a007b4ee6842668357f894da2f080"
+    }
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "NYC Land Cover 2017"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "NYC Land Cover 2017"
+    },
+    {
+      "rel": "agents",
+      "href": "./AGENTS.md",
+      "type": "text/markdown",
+      "title": "Guidance for AI agents"
+    },
+    {
+      "rel": "describedby",
+      "href": "./README.md",
+      "type": "text/markdown",
+      "title": "Human-readable documentation"
+    },
+    {
+      "rel": "via",
+      "href": "https://data.cityofnewyork.us/d/he6d-2qns",
+      "type": "text/html",
+      "title": "NYC Open Data, Land Cover Raster Data (2017) – 6in Resolution"
+    },
+    {
+      "rel": "related",
+      "href": "https://github.com/CityOfNewYork/nyc-geo-metadata/blob/main/Metadata/Metadata_LandCover.md",
+      "type": "text/html",
+      "title": "NYC geo-metadata, Land Cover"
+    },
+    {
+      "rel": "related",
+      "href": "https://maps.nyc.gov/lidar/2017/",
+      "type": "text/html",
+      "title": "Understanding the 2017 New York City LiDAR Capture (story map)"
+    },
+    {
+      "rel": "related",
+      "href": "https://data.cityofnewyork.us/d/sknu-4f6s",
+      "type": "text/html",
+      "title": "NYC Open Data, Landcover Raster Data (2010) – 6in Resolution"
+    },
+    {
+      "rel": "related",
+      "href": "https://data.cityofnewyork.us/d/by9k-vhck",
+      "type": "text/html",
+      "title": "NYC Open Data, Tree Canopy Change (2010 - 2017)"
+    },
+    {
+      "rel": "license",
+      "href": "https://nyc-laws.readthedocs.io/en/latest/nycadmincode/t23/c05/",
+      "type": "text/html",
+      "title": "NYC Administrative Code, Title 23, Chapter 5 (section 23-502)"
+    },
+    {
+      "rel": "license",
+      "href": "https://www.nyc.gov/main/terms-of-use",
+      "type": "text/html",
+      "title": "NYC.gov Terms of Use"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://browser.portolan-sdi.org/#/external/data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/collection.json",
+      "type": "text/html",
+      "title": "Open in the Portolan data browser"
+    },
+    {
+      "rel": "vcs",
+      "href": "https://github.com/BetaNYC/nyc-land-cover-2017",
+      "type": "text/html",
+      "title": "Source repository"
+    },
+    {
+      "rel": "issues",
+      "href": "https://github.com/BetaNYC/nyc-land-cover-2017/issues",
+      "type": "text/html",
+      "title": "Report a problem"
+    },
+    {
+      "rel": "about",
+      "href": "https://source.coop/betanyc/nyc-land-cover-2017",
+      "type": "text/html",
+      "title": "Hosting repository on Source Cooperative"
+    }
+  ],
+  "updated": "2026-10-30T16:13:00Z"
+}

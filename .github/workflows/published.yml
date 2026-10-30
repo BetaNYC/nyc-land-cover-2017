@@ -1,0 +1,66 @@
+name: Published data checks
+
+# Runs the recipes and claim checks written in catalog/**/*.md against the
+# published files, and checks that NYC Open Data still serves the file this
+# catalog mirrors. The source is a static 2018 release, so weekly is enough.
+
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.run.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install GDAL and Python readers
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q gdal-bin
+          python -m pip install rasterio pyproj pyyaml numpy
+      - name: Run the published checks
+        id: run
+        continue-on-error: true
+        run: python3 tests/check_published.py | tee check.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: check-log
+          path: check.log
+
+  # Only this job may write issues. It keeps one issue open while checks fail
+  # and closes it when they pass again.
+  report:
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: check-log
+      - name: Open, update, or close the tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RESULT: ${{ needs.check.outputs.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TITLE="Published data checks failing"
+          NUM=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number // empty')
+          if [ "$RESULT" = "success" ]; then
+            if [ -n "$NUM" ]; then gh issue close "$NUM" --comment "Checks pass again: $RUN_URL"; fi
+            exit 0
+          fi
+          { echo "The scheduled published data checks failed: $RUN_URL"; echo; echo '```'; tail -n 60 check.log; echo '```'; } > body.md
+          if [ -n "$NUM" ]; then gh issue comment "$NUM" --body-file body.md
+          else gh issue create --title "$TITLE" --body-file body.md; fi
+          exit 1

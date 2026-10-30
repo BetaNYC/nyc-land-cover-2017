@@ -4,13 +4,19 @@
   "stac_extensions": [
     "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json"
   ],
-  "id": "example-catalog",
-  "title": "Example Catalog",
-  "description": "TODO(setup): one or two sentences saying what this catalog holds, who produced the data, and who it is for. A person and an agent both read this first.",
+  "id": "nyc-land-cover-2017",
+  "title": "NYC Land Cover 2017",
+  "description": "A mirror of New York City's 2017 high-resolution land cover map, maintained by [BetaNYC](https://beta.nyc). The NYC Office of Technology and Innovation publishes the map on [NYC Open Data](https://data.cityofnewyork.us/d/he6d-2qns) as a zipped ERDAS Imagine file. This catalog carries it as a Cloud Optimized GeoTIFF that clients can read in place. Read the [AGENTS.md](AGENTS.md) before you query it.",
   "links": [
     {
       "rel": "root",
       "href": "./catalog.json",
+      "type": "application/json",
+      "title": "NYC Land Cover 2017"
+    },
+    {
+      "rel": "self",
+      "href": "https://data.source.coop/betanyc/nyc-land-cover-2017/catalog.json",
       "type": "application/json"
     },
     {
@@ -26,14 +32,41 @@
       "title": "Catalog agent guide"
     },
     {
+      "rel": "child",
+      "href": "./land-cover-2017/collection.json",
+      "type": "application/json",
+      "title": "NYC Land Cover 2017 (6-inch, 8 classes)"
+    },
+    {
+      "rel": "alternate",
+      "href": "https://browser.portolan-sdi.org/#/external/data.source.coop/betanyc/nyc-land-cover-2017/catalog.json",
+      "type": "text/html",
+      "title": "Open in the Portolan data browser"
+    },
+    {
       "rel": "vcs",
-      "href": "https://github.com/TODO(setup)",
+      "href": "https://github.com/BetaNYC/nyc-land-cover-2017",
+      "type": "text/html",
       "title": "Source repository"
     },
     {
       "rel": "issues",
-      "href": "https://github.com/TODO(setup)/issues",
-      "title": "Issue tracker"
+      "href": "https://github.com/BetaNYC/nyc-land-cover-2017/issues",
+      "type": "text/html",
+      "title": "Report a problem"
+    },
+    {
+      "rel": "about",
+      "href": "https://source.coop/betanyc/nyc-land-cover-2017",
+      "type": "text/html",
+      "title": "Hosting repository on Source Cooperative"
+    },
+    {
+      "rel": "icon",
+      "href": "./_assets/betanyc-logo.svg",
+      "type": "image/svg+xml",
+      "title": "BetaNYC"
     }
-  ]
+  ],
+  "updated": "2026-10-30T16:13:00Z"
 }

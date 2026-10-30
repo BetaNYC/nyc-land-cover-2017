@@ -1,92 +1,47 @@
-# Portolan Catalog Template
+# NYC Land Cover 2017 — Portolan catalog
 
-A starting point for a [Portolan](https://www.portolan-sdi.org/) catalog whose
-metadata lives in git. Click **Use this template**, work through
-[SETUP.md](SETUP.md), and you have a repository whose CI validates every change
-before it publishes.
+**[Open in the data browser](https://browser.portolan-sdi.org/#/external/data.source.coop/betanyc/nyc-land-cover-2017/catalog.json)** ·
+[Source Cooperative](https://source.coop/betanyc/nyc-land-cover-2017) ·
+[Report a problem](https://github.com/BetaNYC/nyc-land-cover-2017/issues)
 
-**`catalog/` is the published catalog.** Everything in it is published.
-Everything outside it never is. That boundary is the whole publish contract,
-and `tools/publish.py` has no flag or config key that widens it.
+The metadata for a [Portolan](https://www.portolan-sdi.org/) catalog of New
+York City's 2017 high-resolution land cover map: 6-inch pixels, 8 classes (tree
+canopy, grass/shrubs, bare soil, water, buildings, roads, other impervious,
+railroads). The data is a mirror of the
+[NYC Open Data release](https://data.cityofnewyork.us/d/he6d-2qns) from the NYC
+Office of Technology and Innovation, converted from a zipped ERDAS Imagine file
+to a Cloud Optimized GeoTIFF that can be read in place.
 
-## Three kinds of file
+Maintained by [BetaNYC](https://beta.nyc) (lab@beta.nyc).
 
-| Kind | Where | Example |
-|---|---|---|
-| Tracked and published | inside `catalog/` | STAC JSON, `README.md`, `AGENTS.md`, thumbnails, logos |
-| Tracked, never published | outside `catalog/` | `tools/`, `tests/`, `docs/`, this README, `catalog.publish.yaml` |
-| Neither | gitignored | GeoParquet, COGs, PMTiles, credentials |
+## How this repository works
 
-The data lives in object storage next to the published metadata. The
-repository references it by URL and never stores it.
+- `metadata/` holds the hand-written, sourced metadata.
+- `tools/build_catalog.py` generates the STAC JSON and READMEs under `catalog/`.
+- `catalog/` is exactly what is published to
+  `https://data.source.coop/betanyc/nyc-land-cover-2017/`.
+- The COG itself never enters git. It is built with `tools/build_cog.sh` and
+  uploaded with `tools/upload_data.py`.
+- CI validates every pull request with [rashid](https://github.com/portolan-sdi/rashid),
+  checks links, and checks that the generated files are current.
 
-## Layout
+[AGENTS.md](AGENTS.md) has the rebuild and publish steps.
 
-| Path | What it is |
-|---|---|
-| `catalog/` | The published tree, synced 1:1 to object storage |
-| `catalog.publish.yaml` | Where it publishes, and under what public URL |
-| `tools/publish.py` | The sync. Dry run by default |
-| `tools/upload_data.py` | The data upload. Dry run by default |
-| `tests/` | The gates CI runs on every pull request |
-| `docs/conformance.md` | Any validator finding this catalog accepts, and why |
-| `SETUP.md` | The checklist. Delete it when you are done |
+## Contributing
 
-## Publish
-
-```bash
-python3 tools/publish.py            # dry run: what would change
-python3 tools/publish.py --confirm  # upload; needs AWS credentials
-```
-
-It never deletes. Removing a file from `catalog/` does not unpublish it, so
-delete the object yourself if that is what you meant.
-
-## Upload the data
-
-The data is too large for git, so it lives outside `catalog/`.
-`tools/upload_data.py` carries it to the same bucket prefix. Set `data_dir` in
-`catalog.publish.yaml` to the directory that holds it.
+Found a wrong date, a broken link, or a class description that does not match
+the source? Open an [issue](https://github.com/BetaNYC/nyc-land-cover-2017/issues)
+or a pull request that edits `metadata/`, then run:
 
 ```bash
-python3 tools/upload_data.py            # dry run: what would change
-python3 tools/upload_data.py --confirm  # upload; needs AWS credentials
-```
-
-Both scripts share one set of rules. `upload_data.py` imports the sentinel
-guard, the content types, the change detection, and the upload pool from
-`publish.py`. It changes one thing, the directory it walks. Only the suffixes
-in its allow-list upload, so staged scratch files stay out of the bucket.
-
-## Test
-
-```bash
+python3 tools/build_catalog.py
 python3 tests/run_all.py
 ```
 
-| Gate | What it checks |
-|---|---|
-| `test_setup.py` | Template placeholders are all edited, or all untouched |
-| `test_links.py` | Every relative link and asset href resolves |
-| `test_publish.py` | Nothing outside `catalog/` can be uploaded |
-| `test_upload_data.py` | Only staged files with an allowed suffix upload |
-| `test_stac_valid.py` | Valid STAC 1.1.0, via `stac-check` |
-| `test_conformance.py` | Portolan conformance, via `rashid` |
-
-The two validator gates skip when their tools are absent, so a clean checkout
-runs with no setup. CI installs both and enforces them.
-
-## What this template does not decide
-
-How a published catalog points back at the repository that maintains it. Three
-encodings are in use across real catalogs and none is standardized, so this
-template ships none of them rather than freezing one in by default. The
-tradeoffs are in
-[portolan-spec#145](https://github.com/portolan-sdi/portolan-spec/issues/145)
-and in the
-[git-backed catalogs guidance](https://github.com/portolan-sdi/portolan-spec/blob/main/specs/best-practices/git-backed-catalogs.md).
-
 ## License
 
-Apache-2.0, covering the tooling in this repository. The data you catalog
-carries its own license, which belongs in `catalog/README.md`.
+The catalog metadata in this repository is under the terms in [LICENSE](LICENSE).
+The land cover data is published by the City of New York. NYC Open Data states
+no license for it. NYC Administrative Code section 23-502(d) makes public data
+sets available without license requirements or restrictions on use. See the
+collection README for attribution.

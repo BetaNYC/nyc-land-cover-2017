@@ -1,0 +1,37 @@
+# Catalog-level metadata. tools/build_catalog.py turns this file and the
+# collection files beside it into catalog/catalog.json, each collection.json,
+# and every README.md. Edit here, then run the generator. Never hand-edit the
+# generated files.
+
+id: nyc-land-cover-2017
+title: NYC Land Cover 2017
+description: >-
+  A mirror of New York City's 2017 high-resolution land cover map, maintained
+  by [BetaNYC](https://beta.nyc). The NYC Office of Technology and Innovation
+  publishes the map on [NYC Open Data](https://data.cityofnewyork.us/d/he6d-2qns)
+  as a zipped ERDAS Imagine file. This catalog carries it as a Cloud Optimized
+  GeoTIFF that clients can read in place. Read the [AGENTS.md](AGENTS.md)
+  before you query it.
+
+# Navigation targets (see the Portolan catalog navigation contract).
+public_base: https://data.source.coop/betanyc/nyc-land-cover-2017
+hosting_page: https://source.coop/betanyc/nyc-land-cover-2017
+repository: https://github.com/BetaNYC/nyc-land-cover-2017
+issues: https://github.com/BetaNYC/nyc-land-cover-2017/issues
+# {url} is the published JSON URL without its https:// scheme.
+browser_template: https://browser.portolan-sdi.org/#/external/{url}
+
+host:
+  name: BetaNYC
+  roles: [host]
+  url: https://beta.nyc
+  email: lab@beta.nyc
+
+collections:
+  - land-cover-2017
+
+# The catalog publisher's logo, shown by the registry and the data browser.
+logo:
+  href: ./_assets/betanyc-logo.svg
+  type: image/svg+xml
+  title: BetaNYC

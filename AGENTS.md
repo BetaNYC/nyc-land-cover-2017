@@ -1,74 +1,97 @@
-<!-- ops-sync:begin — synced from portolan-sdi/portolan-ops. Edit there, not here. -->
-# Portolan agent norms
+# AGENTS.md — nyc-land-cover-2017 repository
 
-All agents MUST read this document before starting work, with no exceptions, ever. (Claude Code does not read `AGENTS.md` but imports this file via a one-line `CLAUDE.md`.) Most of this content is synced downstream from `portolan-ops`. Put repo-specific instructions in `AGENTS.md`, never in `CLAUDE.md`, which the sync overwrites.
+Instructions for people and agents who change this repository. The guides that
+readers of the published catalog use are `catalog/AGENTS.md` and
+`catalog/land-cover-2017/AGENTS.md`.
 
-## Ground rules
+This repository holds the metadata of a [Portolan](https://www.portolan-sdi.org/)
+catalog that mirrors NYC Land Cover 2017 from
+[NYC Open Data](https://data.cityofnewyork.us/d/he6d-2qns). The catalog and the
+data are served from Source Cooperative at
+<https://source.coop/betanyc/nyc-land-cover-2017>. The
+[portolan-spec](https://github.com/portolan-sdi/portolan-spec) is the ground
+truth for what the catalog must contain. Use conventional commits.
 
-Agents MUST read the complete contents of [norms](https://github.com/portolan-sdi/portolan-ops/blob/main/norms) and [policies](https://github.com/portolan-sdi/portolan-ops/blob/main/policies/) before starting work, with no exceptions, ever.
+## Where things live
 
-The [portolan-spec](https://github.com/portolan-sdi/portolan-spec) repo is the absolute ground truth for the Portolan spec. All other tools are downstream of it.
+| Path | What it is | Edited by |
+|---|---|---|
+| `metadata/catalog.yaml` | Catalog title, description, navigation targets, host | hand |
+| `metadata/land-cover-2017.yaml` | Collection metadata. Every claim names its source | hand |
+| `metadata/land-cover-2017.measured.json` | Facts measured from the COG | `tools/measure_cog.py` |
+| `catalog/**/catalog.json`, `collection.json`, `README.md` | The published STAC and READMEs | `tools/build_catalog.py` only |
+| `catalog/**/AGENTS.md` | Published agent guides | hand |
+| `catalog/land-cover-2017/thumbnail.png` | Collection thumbnail | `tools/make_thumbnail.py` |
+| `tools/build_cog.sh`, `tools/make_vrt.py` | Source `.img` to COG conversion | hand |
+| `../staging/` (outside git) | The built COG, uploaded by `tools/upload_data.py` | build |
 
-Before documenting any command, flag, or API, verify that it exists.
+Never hand-edit a generated file. `tests/test_generated.py` fails when one
+differs from what the generator writes.
 
-Use conventional commits always.
+## Rebuild from the source
 
-All tickets and PRs MUST follow the [templates](https://github.com/portolan-sdi/portolan-ops/blob/main/templates/).
+```bash
+# 1. Download and unzip the source (1.3 GB zip, 130 GB unzipped).
+curl -L -o Land_Cover.zip https://data.cityofnewyork.us/download/he6d-2qns/application/zip
+unzip Land_Cover.zip
+# 2. Convert.
+tools/build_cog.sh Land_Cover/NYC_2017_LiDAR_LandCover.img \
+  ../staging/land-cover-2017/nyc-land-cover-2017.tif
+# 3. Measure, render the thumbnail, regenerate the catalog.
+.venv/bin/python tools/measure_cog.py land-cover-2017 \
+  --cog ../staging/land-cover-2017/nyc-land-cover-2017.tif \
+  --src Land_Cover/NYC_2017_LiDAR_LandCover.img
+.venv/bin/python tools/make_thumbnail.py \
+  --cog ../staging/land-cover-2017/nyc-land-cover-2017.tif \
+  --bbox "$(cat metadata/land-cover-2017.thumbnail-bbox)" \
+  --basemap 'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}' \
+  --out catalog/land-cover-2017/thumbnail.png
+.venv/bin/python tools/build_catalog.py
+python3 tests/run_all.py
+```
 
-GitHub applies issue forms only in the web UI. With `gh issue create`, write each form field as a `### <field label>` heading, in the form's order. Include `### Priority` with one of `P0` to `P3` from the [priority rubric](https://github.com/portolan-sdi/portolan-ops/blob/main/norms/repos.md#priority). Pass the form's type label with `--label`, and pass the body with `--body-file`. The writing hook denies a body that skips its form, and issue governance flags one.
+Look at the thumbnail before you commit it. The script checks that it is not
+blank. It cannot check that it is readable.
 
-## Org-wide facts
+## Publish
 
-The canonical homepage is <https://www.portolan-sdi.org/>. Canonical URLs live in [copy/urls.md](https://github.com/portolan-sdi/portolan-ops/blob/main/copy/urls.md). Do not hardcode variants.
+Publishing uses the template's `tools/publish.py` (the catalog under
+`catalog/`) and `tools/upload_data.py` (the COG under `../staging/`). Do not use
+`portolan push` on this catalog. The two do not share state.
 
-Community discussion happens in the [Portolan Google Group](https://groups.google.com/g/portolan) and the [Portolan channel](https://cloudnativegeo.slack.com/archives/C0A1JBH9529) in Cloud-Native Geo Slack. Planning happens in [org-level GitHub projects](https://github.com/orgs/portolan-sdi/projects/1).
+Both scripts use the `source-coop` AWS profile from `catalog.publish.yaml`. Add
+it to `~/.aws/config` once:
 
-Files between `ops-sync` markers are synced from [portolan-ops](https://github.com/portolan-sdi/portolan-ops). They are overwritten on every sync run. To change one, edit it in portolan-ops.
+```ini
+[profile source-coop]
+credential_process = source-coop creds
+endpoint_url = https://data.source.coop
+```
 
-One canonical home per fact. If a value like a color, URL, or policy line exists in portolan-ops, link to it rather than copying it.
-<!-- ops-sync:end -->
+Then log in and run each script dry before you confirm:
 
-## This Repository
+```bash
+source-coop login
+python3 tools/upload_data.py            # dry run
+python3 tools/upload_data.py --confirm
+python3 tools/publish.py                # dry run
+python3 tools/publish.py --confirm
+```
 
-A template for a git-backed Portolan catalog. Repositories created from it
-inherit everything here, so a mistake in this file propagates.
+Publishing never deletes. Remove a stale object from the bucket separately.
 
-### The publish boundary
+## Rules carried over from the template
 
-`catalog/` is the published catalog. Everything in it is published, and
-nothing outside it ever is. Do not move a file into `catalog/` to make it
-publish, and do not add a path outside `publish_dir` to `tools/publish.py`.
-The boundary is the only thing standing between a scratch file and a public
-bucket, and it holds because it is structural rather than a list of
-exclusions.
-
-### Data never enters git
-
-Never commit a GeoParquet, COG, PMTiles, Zarr, or COPC file. If a gate needs
-bytes to check, generate them in CI. Git keeps every version of a binary
-forever and deleting it later reclaims nothing.
-
-### The conformance allow-list
-
-`ACCEPTED` in `tests/test_conformance.py` ships empty. Never add an entry
-without a matching row in `docs/conformance.md` giving the rule, where it
-fires, why it is accepted, and the issue tracking its removal.
-
-### Published agent guides
-
-Every claim in a `catalog/**/AGENTS.md` is either quoted from a source or
-measured from the data. An invented join key or column name produces a
-confident wrong answer that nothing downstream catches.
-
-### The links back to this repository
-
-`catalog/catalog.json` ships a `vcs` link and an `issues` link. Both hrefs are
-setup placeholders, so `tests/test_setup.py` catches a half-edited repository.
-The Portolan spec recommends these two links for a git-backed catalog. See
-[git-backed catalogs](https://github.com/portolan-sdi/portolan-spec/blob/main/specs/best-practices/git-backed-catalogs.md),
-which merged in August 2026.
-
-Keep both hrefs absolute. The repository sits outside the published catalog,
-so a relative href resolves against the public base URL. Each placeholder
-holds a `://`, because `tests/test_links.py` treats an href without one as a
-path and looks for it on disk.
+- **The publish boundary.** `catalog/` is published and nothing outside it is.
+  Do not move a file into `catalog/` to make it publish, and do not widen
+  `tools/publish.py`.
+- **Data never enters git.** Never commit a COG, GeoParquet, PMTiles, Zarr, or
+  COPC file.
+- **The conformance allow-list.** `ACCEPTED` in `tests/test_conformance.py` is
+  empty. Never add an entry without a row in `docs/conformance.md` that gives
+  the rule, where it fires, why it is accepted, and the tracking issue.
+- **Published agent guides.** Every claim in a `catalog/**/AGENTS.md` is quoted
+  from a source or measured from the data, and every recipe in one was run
+  against the published file.
+- **Absolute repository links.** The `vcs` and `issues` links point outside the
+  published catalog, so their hrefs stay absolute.
