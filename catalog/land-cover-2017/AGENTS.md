@@ -32,7 +32,7 @@ pixel is a real class value.
 | 8 | Railroads | Not defined beyond the name. Part of Roads in the 2010 map |
 
 Exact pixel counts and shares for every class are in `collection.json`, under
-`assets.data.bands[0]["classification:classes"]`. Do not recompute them from the
+`assets.data["classification:classes"]`. Do not recompute them from the
 full-resolution file. They came from a full pass over every pixel and match
 the source attribute table exactly.
 
@@ -130,7 +130,7 @@ UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
 col = json.load(urllib.request.urlopen(
     urllib.request.Request(BASE + "collection.json", headers=UA)))
 exact = {c["value"]: c["percentage"]
-         for c in col["assets"]["data"]["bands"][0]["classification:classes"]
+         for c in col["assets"]["data"]["classification:classes"]
          if not c.get("nodata")}
 with rasterio.open(BASE + "nyc-land-cover-2017.tif", overview_level=4) as ds:
     a = ds.read(1)
@@ -151,7 +151,7 @@ BASE = "https://data.source.coop/betanyc/nyc-land-cover-2017/land-cover-2017/"
 UA = {"User-Agent": "nyc-land-cover-2017-reader"}  # see Quirks
 col = json.load(urllib.request.urlopen(
     urllib.request.Request(BASE + "collection.json", headers=UA)))
-for c in col["assets"]["data"]["bands"][0]["classification:classes"]:
+for c in col["assets"]["data"]["classification:classes"]:
     print(c["value"], c["title"], c.get("color_hint", "transparent"),
           c.get("percentage", ""))
 ```

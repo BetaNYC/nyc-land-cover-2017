@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parent.parent
 META = ROOT / "metadata"
 CATALOG = ROOT / "catalog"
 
-PORTOLAN_SCHEMA = "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json"
+PORTOLAN_SCHEMA = "https://schemas.portolan-sdi.org/portolan/v0.3.0/schema.json"
 EXT = {
     "file": "https://stac-extensions.github.io/file/v2.1.0/schema.json",
     "proj": "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
@@ -129,9 +129,7 @@ def build_collection(cat: dict, col: dict, measured: dict) -> tuple[dict, str]:
         "name": col["data"]["band_name"],
         "description": " ".join(col["data"]["band_description"].split()),
         "data_type": measured["data_type"],
-        "nodata": int(measured["nodata"]),
         "statistics": measured["statistics"],
-        "classification:classes": classes,
     }
 
     assets = {
@@ -146,6 +144,10 @@ def build_collection(cat: dict, col: dict, measured: dict) -> tuple[dict, str]:
             "proj:shape": measured["proj_shape"],
             "proj:transform": measured["proj_transform"],
             "proj:bbox": measured["proj_bbox"],
+            # Portolan v0.3.0 (PORTO-FMT-050): a single-band raster carries
+            # its class list on the data asset, next to its nodata.
+            "nodata": int(measured["nodata"]),
+            "classification:classes": classes,
             "bands": [band],
         },
         "thumbnail": {
