@@ -2,7 +2,7 @@
   "type": "Collection",
   "stac_version": "1.1.0",
   "stac_extensions": [
-    "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json",
+    "https://schemas.portolan-sdi.org/portolan/v0.3.0/schema.json",
     "https://stac-extensions.github.io/file/v2.1.0/schema.json",
     "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
     "https://stac-extensions.github.io/classification/v2.0.0/schema.json"
@@ -101,97 +101,97 @@
         1067708.9300000002,
         273618.3
       ],
+      "nodata": 0,
+      "classification:classes": [
+        {
+          "value": 0,
+          "name": "nodata",
+          "title": "NoData",
+          "description": "Outside the New York City boundary. Transparent.",
+          "nodata": true
+        },
+        {
+          "value": 1,
+          "name": "Tree-Canopy",
+          "title": "Tree Canopy",
+          "description": "Vegetation taller than 8 ft, including canopy that overhangs other features. Current as of 2017.",
+          "color_hint": "2E7D32",
+          "count": 7446483259,
+          "percentage": 16.0239
+        },
+        {
+          "value": 2,
+          "name": "Grass-Shrubs",
+          "title": "Grass/Shrubs",
+          "description": "Vegetation 8 ft or lower.",
+          "color_hint": "A6D96A",
+          "count": 5493958626,
+          "percentage": 11.8223
+        },
+        {
+          "value": 3,
+          "name": "Bare-Soil",
+          "title": "Bare Soil",
+          "description": "The least accurate class: user's accuracy 89%, producer's accuracy 82%.",
+          "color_hint": "C8A165",
+          "count": 565995276,
+          "percentage": 1.2179
+        },
+        {
+          "value": 4,
+          "name": "Water",
+          "title": "Water",
+          "color_hint": "4A90C8",
+          "count": 13237953060,
+          "percentage": 28.4864
+        },
+        {
+          "value": 5,
+          "name": "Buildings",
+          "title": "Buildings",
+          "description": "Current as of 2017.",
+          "color_hint": "B5473A",
+          "count": 6709981535,
+          "percentage": 14.439
+        },
+        {
+          "value": 6,
+          "name": "Roads",
+          "title": "Roads",
+          "color_hint": "3F3F3F",
+          "count": 4627975203,
+          "percentage": 9.9588
+        },
+        {
+          "value": 7,
+          "name": "Other-Impervious",
+          "title": "Other Impervious",
+          "color_hint": "A9A9A9",
+          "count": 8138988426,
+          "percentage": 17.514
+        },
+        {
+          "value": 8,
+          "name": "Railroads",
+          "title": "Railroads",
+          "description": "New in the 2017 map. The 2010 map folded railroads into Roads (6). Reassign 8 to 6 to compare the two years.",
+          "color_hint": "7E4FA0",
+          "count": 249879655,
+          "percentage": 0.5377
+        }
+      ],
       "bands": [
         {
           "name": "land_cover_class",
           "description": "Land cover class code, 1 to 8. 0 is NoData, outside the city boundary.",
           "data_type": "uint8",
-          "nodata": 0,
           "statistics": {
             "minimum": 1.0,
             "maximum": 8.0,
             "mean": 4.1611546745131,
             "stddev": 2.0263974871886,
             "valid_percent": 47.55
-          },
-          "classification:classes": [
-            {
-              "value": 0,
-              "name": "nodata",
-              "title": "NoData",
-              "description": "Outside the New York City boundary. Transparent.",
-              "nodata": true
-            },
-            {
-              "value": 1,
-              "name": "Tree-Canopy",
-              "title": "Tree Canopy",
-              "description": "Vegetation taller than 8 ft, including canopy that overhangs other features. Current as of 2017.",
-              "color_hint": "2E7D32",
-              "count": 7446483259,
-              "percentage": 16.0239
-            },
-            {
-              "value": 2,
-              "name": "Grass-Shrubs",
-              "title": "Grass/Shrubs",
-              "description": "Vegetation 8 ft or lower.",
-              "color_hint": "A6D96A",
-              "count": 5493958626,
-              "percentage": 11.8223
-            },
-            {
-              "value": 3,
-              "name": "Bare-Soil",
-              "title": "Bare Soil",
-              "description": "The least accurate class: user's accuracy 89%, producer's accuracy 82%.",
-              "color_hint": "C8A165",
-              "count": 565995276,
-              "percentage": 1.2179
-            },
-            {
-              "value": 4,
-              "name": "Water",
-              "title": "Water",
-              "color_hint": "4A90C8",
-              "count": 13237953060,
-              "percentage": 28.4864
-            },
-            {
-              "value": 5,
-              "name": "Buildings",
-              "title": "Buildings",
-              "description": "Current as of 2017.",
-              "color_hint": "B5473A",
-              "count": 6709981535,
-              "percentage": 14.439
-            },
-            {
-              "value": 6,
-              "name": "Roads",
-              "title": "Roads",
-              "color_hint": "3F3F3F",
-              "count": 4627975203,
-              "percentage": 9.9588
-            },
-            {
-              "value": 7,
-              "name": "Other-Impervious",
-              "title": "Other Impervious",
-              "color_hint": "A9A9A9",
-              "count": 8138988426,
-              "percentage": 17.514
-            },
-            {
-              "value": 8,
-              "name": "Railroads",
-              "title": "Railroads",
-              "description": "New in the 2017 map. The 2010 map folded railroads into Roads (6). Reassign 8 to 6 to compare the two years.",
-              "color_hint": "7E4FA0",
-              "count": 249879655,
-              "percentage": 0.5377
-            }
-          ]
+          }
         }
       ]
     },

@@ -26,7 +26,7 @@ on [NYC Open Data](https://data.cityofnewyork.us/d/he6d-2qns).
 ## How to read it
 
 Walk the STAC links from the root. The data asset of a collection is the asset
-with the `data` role. Its `bands[0]["classification:classes"]` maps each pixel
+with the `data` role. Its `"classification:classes"` list maps each pixel
 value to a class name, a colour, and an exact pixel count:
 
 <!-- check -->

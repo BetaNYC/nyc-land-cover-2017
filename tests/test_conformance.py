@@ -42,10 +42,10 @@ target = ROOT / config["publish_dir"]
 # PTL-LNK-008, PTL-LNK-009 and PTL-AST-006 do not exist below rashid 0.1.5.
 # This gate asserts all four. A rashid below the floor reports a pass for a
 # catalog that it never checked against those four rules. The upper bound stops
-# an unreviewed 0.2 rule set from changing what this gate means.
-MIN_VERSION = (0, 3, 0)
-MAX_VERSION = (0, 4, 0)
-SPEC = "rashid>=0.3.0,<0.4.0"
+# an unreviewed 0.5 rule set from changing what this gate means.
+MIN_VERSION = (0, 4, 0)
+MAX_VERSION = (0, 5, 0)
+SPEC = "rashid>=0.4.0,<0.5.0"
 INSTALL = f"python -m pip install '{SPEC}'"
 
 
